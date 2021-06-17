@@ -105,7 +105,7 @@ while balance == '0':
 		r.text
 		data = json.loads(r.text)
 		balance = data['result']
-                print '0x' + address + ' - Balance: ' + data['result']
+		print '0x' + address + ' - Balance: ' + data['result']
 		print '\r' + 'Searched ',wallets,' addresses',
 		
                 if balance != '0':
