@@ -30,6 +30,7 @@ import requests
 import json
 import os
 import sys
+import time
 
 def hexa(cha):
 	hexas=hex(cha)[2:-1]
@@ -84,6 +85,7 @@ if __name__ == '__main__':
 	balance()
 	wallets = 0
 while balance == '0':
+	time.sleep(0.2)
 	try:
 		if len(sys.argv) > 1:
 			arg1 = sys.argv[1]
@@ -102,11 +104,12 @@ while balance == '0':
 		assert compute_adr(foundprivkeynum) == address
 		pvhex = hexa(foundprivkeynum)
 		r = requests.get('https://api.etherscan.io/api?module=account&action=balance&address=0x' + address + '&tag=latest&apikey=' + apikey)
-		r.text
 		data = json.loads(r.text)
-		balance = data['result']
-		print '0x' + address + ' - Balance: ' + data['result']
-		print '\r' + 'Searched ',wallets,' addresses',
+
+		if r.status_code == 200:
+			balance = data['result']
+
+		print '\r' + 'Searched ', wallets, ' addresses' + ' 0x' + address + ' - Balance: ' + data['result']
 		
                 if balance != '0':
                         print 'Wallet Found!'
@@ -117,12 +120,7 @@ while balance == '0':
                         
 		        privfileexist=False
 		        conf="n"
-		        if os.path.isfile('priv.prv'):
-			        privfileexist=True
-			        conf=raw_input("Enter 'y' to confirm overwriting priv.prv file : ")
-		        if (conf=="y" or not privfileexist):
-			        with open('priv.prv', 'wb') as f:
-				        f.write(pvhex)
-			        print "Private key exported in priv.prv file"
-			        print "Can be imported in geth : 'geth account import priv.prv'\n"
+
+		        with open('priv-' + str(int(time.time())) + '.txt', 'wb') as ff:
+				ff.write(pvhex + "  \n" + address + "  \n" + data['result'])
 
