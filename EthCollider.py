@@ -63,7 +63,9 @@ def compute_adr(priv_num):
 
 def balance():
         global balance
+        global apikey
         balance = '0'
+        apikey = ''
         print 'Ethereum Collider developed by Trent Pierce (www.SkeeBomb.com)'
 	print
 	print 'To promote development, please send donations to 01171ab97216939Ddf49b8Ac9DFFE80b8178fcF6'
@@ -99,10 +101,11 @@ while balance == '0':
                 wallets = wallets + 1
 		assert compute_adr(foundprivkeynum) == address
 		pvhex = hexa(foundprivkeynum)
-		r = requests.get('https://api.etherscan.io/api?module=account&action=balance&address=' + address + '&tag=latest&apikey=V7GSGSMWZ2CZH1B6MBXM84SZ1XG4DXDCW9')
+		r = requests.get('https://api.etherscan.io/api?module=account&action=balance&address=0x' + address + '&tag=latest&apikey=' + apikey)
 		r.text
 		data = json.loads(r.text)
 		balance = data['result']
+                print '0x' + address + ' - Balance: ' + data['result']
 		print '\r' + 'Searched ',wallets,' addresses',
 		
                 if balance != '0':
